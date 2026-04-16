@@ -1,4 +1,1 @@
-The tool follows a decoupled architecture: 
-1. **SnapshotEngine**: Handles filesystem I/O, recursion, and hashing logic. Uses streaming reads to maintain a low memory footprint.
-2. **DiffEngine**: A pure functional component that takes two state dictionaries and computes the symmetric difference.
-3. **Controller/CLI Layer**: Leverages argparse for command routing and handles serialization concerns. Use of Pathlib ensures cross-platform compatibility.
+The architecture is structured into three strictly decoupled layers: 1. Data Acquisition (SnapshotEngine) which uses Pathlib's rglob for efficient traversal and a configurable buffer (64KB default) for high-throughput hashing without memory spikes. 2. Business Logic (DiffEngine) which utilizes Python's set theory operations (O(n) complexity) to determine state changes, ensuring scalability for large file trees. 3. Orchestration (CLIController) which handles I/O boundaries, serialization with UTF-8 encoding, and logging. This separation allows for the DiffEngine to be unit-tested without disk access and the SnapshotEngine to be extended for different storage backends (e.g., S3).
